@@ -1,0 +1,5 @@
+{
+    "editor.inlineSuggest.enabled": false,
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.showExpandedAbbreviation": "always"
+}
