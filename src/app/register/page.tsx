@@ -1,131 +1,107 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { getSession, saveSession } from '@/lib/session'
+// ============================================
+// Register Page
+// ============================================
+// Creates: auth user → client row → user profile row.
 
-const RegisterPage = () => {
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { AuthForm, type AuthFormData } from "@/components/auth-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle } from "lucide-react";
 
-    const [name, setName] = useState("")
-    const [organizationName, setOrganizationName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    
-    const router = useRouter()
+export const dynamic = "force-dynamic";
 
-    useEffect(() => {
-        const storedEmail = getSession()
-    
-        if (storedEmail){
-          router.push("/dashboard")
-        }
-      }, [router])
+export default function RegisterPage() {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const supabase = createClient();
 
-    const handelSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        console.log({
-            name, organizationName, email, password
-        })
-        saveSession(email)
-        router.push("/dashboard")
+  const handleRegister = async (data: AuthFormData) => {
+    setError("");
+
+    // Step 1: Sign up with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+    });
+
+    if (authError) {
+      setError(authError.message);
+      return;
     }
-    
 
+    if (!authData.user) {
+      setError("Failed to create account. Please try again.");
+      return;
+    }
+
+    // Step 2: Create the client (organization) row
+    const { data: clientData, error: clientError } = await supabase
+      .from("clients")
+      .insert({
+        name: data.organizationName,
+        email: data.email,
+      })
+      .select()
+      .single();
+
+    if (clientError) {
+      setError(`Failed to create organization: ${clientError.message}`);
+      return;
+    }
+
+    // Step 3: Create the user profile row
+    const { error: profileError } = await supabase.from("users").insert({
+      id: authData.user.id,
+      email: data.email,
+      client_id: clientData.id,
+      role: "client_admin",
+      verified: false,
+    });
+
+    if (profileError) {
+      setError(`Failed to create profile: ${profileError.message}`);
+      return;
+    }
+
+    // Show success message (email verification needed)
+    setSuccess(true);
+  };
+
+  // Show success state — tell user to verify email
+  if (success) {
     return (
-        <main className="min-h-screen flex items-center justify-center">
-            <div className="w-full max-w-md border p-9 rounded-lg">
-                <h1
-                    className="text-2xl font-semibold"
-                >
-                    Register
-                </h1>
-
-                <form onSubmit={handelSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <label htmlFor="name" className="block text-sm font-medium">
-                            Name
-                        </label>
-                        <input
-                            id="name"
-                            type="text"
-                            placeholder="Enter your name"
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                            value={name}
-                            onChange={(event) => setName(event.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label
-                            htmlFor="organizationName"
-                            className="block text-sm font-medium"
-                        >
-                            Organization Name
-                        </label>
-                        <input
-                            id="organizationName"
-                            type="text"
-                            placeholder="Enter organization name"
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                            value={organizationName}
-                            onChange={(event) => setOrganizationName(event.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium"
-                        >
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="Enter Your Email"
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className='space-y-2'>
-                        <label
-                            htmlFor="password"
-                            className='block text-sm font-medium'
-                        >
-                            Password
-                        </label>
-                        <input
-                            id='password'
-                            type="password"
-                            placeholder='Create a Password'
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2'
-                            value={password}
-                            onChange={(event) => setPassword(event?.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button className='w-full rounded-lg bg-white py-2.5 text-black'>
-                        Register
-                    </button>
-
-                    <p className='text-sm text-center'>
-                        Already have an account?{" "}
-                        <Link href="/login" className='font-medium underline'>
-                            Login
-                        </Link>
-                    </p>
-
-                </form>
+      <main className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
-        </main>
-    )
-}
+            <CardTitle className="text-2xl">Check Your Email</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              We&apos;ve sent a verification link to your email address. Please
+              click the link to verify your account.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              After verification, you can{" "}
+              <a href="/login" className="font-medium underline text-foreground">
+                sign in
+              </a>{" "}
+              to your account.
+            </p>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
 
-export default RegisterPage
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+      <AuthForm mode="register" onSubmit={handleRegister} error={error} />
+    </main>
+  );
+}

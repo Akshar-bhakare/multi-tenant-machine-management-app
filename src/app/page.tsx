@@ -1,9 +1,11 @@
-import Image from "next/image";
+// ============================================
+// Root Page — Redirects to /dashboard
+// ============================================
+// If user is logged in, middleware sends them to /dashboard.
+// If not logged in, middleware sends them to /login.
 
-export default function Home() {
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-semibold">Project setup complete</h1>
-    </main>
-  );
+import { redirect } from "next/navigation";
+
+export default function HomePage() {
+  redirect("/dashboard");
 }
