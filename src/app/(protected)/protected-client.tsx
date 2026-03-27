@@ -26,8 +26,8 @@ function ProtectedContent({ children }: { children: React.ReactNode }) {
       <Navbar />
       <div className="flex flex-1 relative">
         <AppSidebar />
-        <main className="flex-1 overflow-auto bg-muted/20 pl-16">
-          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <main className="flex-1 overflow-auto pl-[68px]">
+          <div className="mx-auto max-w-7xl px-6 py-8">
             {children}
           </div>
         </main>

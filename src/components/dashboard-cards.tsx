@@ -6,24 +6,37 @@ import { Monitor, Users, Activity } from "lucide-react";
 
 interface StatsCardProps {
   title: string;
-  value: number;
+  value: string | number;
   icon: React.ReactNode;
+  color?: string;
 }
 
-function StatsCard({ title, value, icon }: StatsCardProps) {
+function StatsCard({ title, value, icon, color = "blue" }: StatsCardProps) {
   return (
-    <Card className="border-border/50 bg-card/40 shadow-none hover:bg-card/60 transition-colors group">
-      <CardContent className="p-6 flex items-center justify-between">
-        <div className="flex flex-col">
-          <div className="text-4xl font-bold tracking-tighter mb-1 leading-none group-hover:text-primary transition-colors">
-            {value}
+    <Card className="relative overflow-hidden border-border/40 bg-card/30 backdrop-blur-sm transition-all duration-300 hover:bg-card/50 hover:border-primary/20 group">
+      {/* Subtle Glow Background */}
+      <div className={cn(
+        "absolute -right-8 -top-8 h-32 w-32 rounded-full blur-[80px] transition-opacity opacity-20 group-hover:opacity-40",
+        color === "blue" ? "bg-blue-500" : color === "green" ? "bg-emerald-500" : "bg-indigo-500"
+      )} />
+      
+      <CardContent className="p-6 relative z-10">
+        <div className="flex items-start justify-between">
+          <div className="flex flex-col">
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">
+              {title}
+            </p>
+            <div className="text-[36px] font-bold tracking-tight leading-none text-foreground">
+              {value}
+            </div>
           </div>
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
-            {title}
-          </p>
-        </div>
-        <div className="p-3 rounded-lg bg-secondary/30 text-primary/80 group-hover:scale-110 group-hover:text-primary transition-all duration-300">
-          {icon}
+          
+          <div className={cn(
+            "p-2.5 rounded-xl border border-border/50 bg-secondary/30 transition-all duration-500 group-hover:scale-110 group-hover:border-primary/30",
+            color === "blue" ? "text-blue-400 group-hover:text-blue-300" : color === "green" ? "text-emerald-400 group-hover:text-emerald-300" : "text-indigo-400 group-hover:text-indigo-300"
+          )}>
+            {icon}
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -31,6 +44,7 @@ function StatsCard({ title, value, icon }: StatsCardProps) {
 }
 
 import { Machine } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 interface DashboardCardsProps {
   machines: Machine[];
@@ -49,18 +63,21 @@ export function DashboardCards({ machines, clientsCount }: DashboardCardsProps) 
         <StatsCard
           title="Total Clients"
           value={clientsCount || 0}
-          icon={<Users className="h-6 w-6" />}
+          icon={<Users className="w-5 h-5" />}
+          color="indigo"
         />
       )}
       <StatsCard
         title="Total Machines"
         value={totalMachines}
-        icon={<Monitor className="h-6 w-6" />}
+        icon={<Monitor className="w-5 h-5" />}
+        color="blue"
       />
       <StatsCard
         title="Active Machines"
         value={activeMachines}
-        icon={<Activity className="h-6 w-6" />}
+        icon={<Activity className="w-5 h-5" />}
+        color="green"
       />
     </div>
   );

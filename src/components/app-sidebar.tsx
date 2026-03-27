@@ -38,15 +38,15 @@ export function AppSidebar() {
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col fixed left-0 top-16 h-[calc(100vh-64px)] bg-sidebar border-r border-border/50 transition-all duration-300 ease-in-out z-40 overflow-hidden",
-        isHovered ? "w-64" : "w-16"
+        "hidden lg:flex flex-col fixed left-0 top-[60px] h-[calc(100vh-60px)] bg-card border-r border-border/40 transition-all duration-300 ease-in-out z-40 overflow-hidden",
+        isHovered ? "w-64" : "w-[68px]"
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex flex-col flex-1 py-4">
+      <div className="flex flex-col flex-1 py-6">
         {/* Navigation Links */}
-        <nav className="space-y-2 px-2">
+        <nav className="flex-1 space-y-1 px-3">
           {filteredNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -54,19 +54,19 @@ export function AppSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center rounded-md h-10 transition-all group overflow-hidden whitespace-nowrap outline-hidden",
+                  "flex items-center rounded-xl h-11 transition-all group overflow-hidden whitespace-nowrap outline-none relative",
                   isActive
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                  isHovered ? "px-3 gap-4" : "justify-center gap-0"
+                    ? "bg-primary/10 text-primary border border-primary/20"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground border border-transparent",
+                  isHovered ? "px-3 gap-4" : "justify-center px-0"
                 )}
               >
                 <item.icon className={cn(
-                  "h-5 w-5 shrink-0 transition-colors",
-                  isActive ? "text-primary" : "group-hover:text-foreground"
+                  "h-[18px] w-[18px] shrink-0 transition-all",
+                  isActive ? "text-primary scale-110" : "group-hover:text-foreground"
                 )} />
                 <span className={cn(
-                  "text-sm font-medium transition-opacity duration-200",
+                  "text-[13px] font-bold uppercase tracking-widest transition-opacity duration-300",
                   isHovered ? "opacity-100" : "opacity-0 invisible w-0"
                 )}>
                   {item.label}
@@ -75,6 +75,8 @@ export function AppSidebar() {
             );
           })}
         </nav>
+
+        {/* Brand / Logo at bottom or footer area if needed, but keeping it simple for now */}
       </div>
     </aside>
   );

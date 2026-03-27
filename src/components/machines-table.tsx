@@ -79,15 +79,18 @@ export function MachinesTable({
   }
 
   return (
-    <div className="rounded-lg border border-border/50 bg-card/30 overflow-hidden">
-      <Table>
-        <TableHeader className="bg-muted/50">
-          <TableRow className="hover:bg-transparent border-border/50">
-            <TableHead className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground h-10">Machine Name</TableHead>
-            <TableHead className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground h-10">Mode</TableHead>
-            <TableHead className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground h-10">Status</TableHead>
-            <TableHead className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground h-10">Last Active</TableHead>
-            {showActions && <TableHead className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground h-10 text-right">Actions</TableHead>}
+    <div className="relative overflow-hidden rounded-xl border border-border/40 bg-card/30 backdrop-blur-sm transition-all duration-300">
+      {/* Subtle Glow */}
+      <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-blue-500 blur-[100px] opacity-10 pointer-events-none" />
+      
+      <Table className="relative z-10">
+        <TableHeader>
+          <TableRow className="hover:bg-transparent border-border/40">
+            <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Machine Name</TableHead>
+            <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Mode</TableHead>
+            <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Status</TableHead>
+            <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Last Active</TableHead>
+            {showActions && <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6 text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>

@@ -150,32 +150,38 @@ function AdminContent() {
       </div>
 
       {/* Clients Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>All Clients ({clients.length})</CardTitle>
+      <Card className="relative overflow-hidden border-border/40 bg-card/30 backdrop-blur-sm transition-all duration-300">
+        <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-indigo-500 blur-[100px] opacity-10 pointer-events-none" />
+        <CardHeader className="relative z-10 border-b border-border/40">
+          <CardTitle className="text-[14px] font-bold uppercase tracking-widest text-muted-foreground">All Clients ({clients.length})</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 relative z-10">
           {clients.length === 0 ? (
             <p className="text-center py-8 text-muted-foreground">
               No clients registered yet.
             </p>
           ) : (
-            <div className="rounded-lg border">
+            <div className="overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Organization</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>API Key</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                  <TableRow className="hover:bg-transparent border-border/40">
+                    <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Organization</TableHead>
+                    <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Email</TableHead>
+                    <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">API Key</TableHead>
+                    <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6">Created</TableHead>
+                    <TableHead className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80 h-11 px-6 text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {clients.map((client) => (
-                    <TableRow key={client.id}>
-                      <TableCell className="font-medium">
-                        {client.name}
+                    <TableRow key={client.id} className="border-border/40 hover:bg-muted/30 transition-colors">
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-xs font-bold text-foreground border border-border/50 shrink-0">
+                            {client.name.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="font-medium">{client.name}</span>
+                        </div>
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {client.email}
