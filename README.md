@@ -1,3 +1,4 @@
+<img width="1902" height="978" alt="image" src="https://github.com/user-attachments/assets/2cfec8f6-b7f2-47ba-9794-80e6a5511708" />
 # Machine Manager (Multi-Tenant)
 
 - High-end machine management platform.
