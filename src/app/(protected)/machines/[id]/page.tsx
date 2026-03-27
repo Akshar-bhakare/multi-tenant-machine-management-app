@@ -91,6 +91,25 @@ export default function MachineDetailPage() {
     fetchMachine();
   };
 
+  // Enable context
+  const handleEnable = async () => {
+    const { error } = await supabase
+      .from("machines")
+      .update({ 
+        status: "Active",
+        last_active: new Date().toISOString()
+      })
+      .eq("id", machineId);
+
+    if (error) {
+      toast.error("Failed to enable machine");
+      return;
+    }
+
+    toast.success("Machine set to Active");
+    fetchMachine();
+  };
+
   // Disable the machine
   const handleDisable = async () => {
     const { error } = await supabase
@@ -189,10 +208,15 @@ export default function MachineDetailPage() {
               <RefreshCw className="h-3.5 w-3.5 mr-2" />
               Reset API Key
             </Button>
-            {machine.status !== "Inactive" && (
+            {machine.status === "Active" ? (
               <Button variant="outline" size="sm" className="h-8 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 border-border/50" onClick={handleDisable}>
                 <Power className="h-3.5 w-3.5 mr-2" />
                 Set Inactive
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" className="h-8 text-xs text-emerald-400 hover:text-emerald-500 hover:bg-emerald-500/10 border-border/50" onClick={handleEnable}>
+                <Power className="h-3.5 w-3.5 mr-2" />
+                Set Active
               </Button>
             )}
           </div>

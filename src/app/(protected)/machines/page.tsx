@@ -105,9 +105,16 @@ export default function MachinesPage() {
 
   // Update machine status
   const handleStatusUpdate = async (machineId: string, newStatus: string) => {
+    const updateData: any = { status: newStatus };
+    
+    // If setting to Active, also update last_active
+    if (newStatus === "Active") {
+      updateData.last_active = new Date().toISOString();
+    }
+
     const { error } = await supabase
       .from("machines")
-      .update({ status: newStatus })
+      .update(updateData)
       .eq("id", machineId);
 
     if (error) {

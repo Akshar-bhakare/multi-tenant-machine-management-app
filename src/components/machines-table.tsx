@@ -7,6 +7,7 @@
 // Used on the machines page and admin page.
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -101,7 +102,9 @@ export function MachinesTable({
               onClick={() => router.push(`/machines/${machine.id}`)}
             >
               <TableCell className="py-4 font-medium text-sm tracking-tight group-hover/row:text-primary transition-colors">
-                {machine.machine_name}
+                <Link href={`/machines/${machine.id}`} onClick={(e) => e.stopPropagation()}>
+                  {machine.machine_name}
+                </Link>
               </TableCell>
               <TableCell className="py-4">{getModeBadge(machine.mode)}</TableCell>
               <TableCell className="py-4">{getStatusBadge(machine.status)}</TableCell>
