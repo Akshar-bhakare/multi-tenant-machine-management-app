@@ -37,6 +37,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { RefreshCw } from "lucide-react";
+import { generateClientApiKey } from "@/lib/api-keys";
 
 export default function AdminPage() {
   return (
@@ -76,6 +78,23 @@ function AdminContent() {
     if (profile) fetchClients();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
+
+  // Rotate client API key
+  const handleRotateApiKey = async (clientId: string) => {
+    const newKey = generateClientApiKey();
+    const { error } = await supabase
+      .from("clients")
+      .update({ client_api_key: newKey })
+      .eq("id", clientId);
+
+    if (error) {
+      toast.error("Failed to rotate API key");
+      return;
+    }
+
+    toast.success("Client API key rotated successfully");
+    fetchClients();
+  };
 
   // View machines for a specific client
   const handleViewMachines = async (client: Client) => {
@@ -175,10 +194,20 @@ function AdminContent() {
                       <TableCell className="text-muted-foreground">
                         {formatDate(client.created_at)}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                          title="Rotate API Key"
+                          onClick={() => handleRotateApiKey(client.id)}
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
+                          className="h-8 px-3 text-xs"
                           onClick={() => handleViewMachines(client)}
                         >
                           View Machines

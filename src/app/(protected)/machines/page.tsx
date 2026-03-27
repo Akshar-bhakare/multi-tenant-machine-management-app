@@ -87,19 +87,19 @@ export default function MachinesPage() {
     fetchMachines();
   };
 
-  // Disable a machine (set status to Offline)
-  const handleDisable = async (machineId: string) => {
+  // Update machine status
+  const handleStatusUpdate = async (machineId: string, newStatus: string) => {
     const { error } = await supabase
       .from("machines")
-      .update({ status: "Inactive" })
+      .update({ status: newStatus })
       .eq("id", machineId);
 
     if (error) {
-      toast.error("Failed to disable machine");
+      toast.error(`Failed to update status to ${newStatus}`);
       return;
     }
 
-    toast.success("Machine set to Inactive");
+    toast.success(`Machine status updated to ${newStatus}`);
     fetchMachines();
   };
 
@@ -112,13 +112,7 @@ export default function MachinesPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-2">Management</div>
           <h1 className="text-3xl font-bold tracking-tight">Machines</h1>
-          <p className="text-sm text-muted-foreground mt-2">
-            {profile?.role === "super_admin"
-              ? "Full visibility into all connected systems"
-              : "Organization machine fleet status"}
-          </p>
         </div>
 
         {/* Only client_admin can add machines */}
@@ -131,7 +125,7 @@ export default function MachinesPage() {
       <MachinesTable
         machines={machines}
         onResetKey={handleResetKey}
-        onDisable={handleDisable}
+        onStatusChange={handleStatusUpdate}
       />
     </div>
   );

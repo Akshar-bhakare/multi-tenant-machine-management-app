@@ -64,31 +64,18 @@ export default function DashboardPage() {
     return <p className="text-muted-foreground">Loading dashboard...</p>;
   }
 
-  const activeMachines = machines.filter((m) => m.status === "Active").length;
-  const offlineMachines = machines.filter((m) => m.status === "Inactive").length;
-  const errorMachines = machines.filter((m) => m.status === "Error").length;
   const recentMachines = machines.slice(0, 5);
 
   return (
     <div className="space-y-8">
-      {/* Page Header */}
       <div className="mb-8">
-        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-2">Overview</div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          {profile?.role === "super_admin"
-            ? "Monitoring all clients and machine systems"
-            : "Managing your organization's machine performance"}
-        </p>
       </div>
 
       {/* Stats Cards */}
       <DashboardCards
-        totalMachines={machines.length}
-        activeMachines={activeMachines}
-        offlineMachines={offlineMachines}
-        errorMachines={errorMachines}
-        totalClients={
+        machines={machines}
+        clientsCount={
           profile?.role === "super_admin" ? clients.length : undefined
         }
       />

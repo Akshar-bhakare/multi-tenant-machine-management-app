@@ -8,6 +8,7 @@
 
 import { AuthProvider, useAuth } from "@/components/auth-provider";
 import { AppSidebar } from "@/components/app-sidebar";
+import { Navbar } from "@/components/navbar";
 
 function ProtectedContent({ children }: { children: React.ReactNode }) {
   const { loading } = useAuth();
@@ -15,17 +16,22 @@ function ProtectedContent({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-muted-foreground text-lg">Loading...</p>
+        <p className="text-muted-foreground text-lg font-medium animate-pulse">Loading platform...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen">
-      <AppSidebar />
-      <main className="flex-1 overflow-auto">
-        <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">{children}</div>
-      </main>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <div className="flex flex-1 relative">
+        <AppSidebar />
+        <main className="flex-1 overflow-auto bg-muted/20 pl-16">
+          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
