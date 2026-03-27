@@ -14,10 +14,13 @@ import { createClient } from "@/lib/supabase/client";
 import { MachinesTable } from "@/components/machines-table";
 import { MachineForm } from "@/components/machine-form";
 import { generateMachineApiKey } from "@/lib/api-keys";
+import { Pagination } from "@/components/ui/pagination";
 import type { Machine } from "@/types/database";
 import { toast } from "sonner";
 
 export const dynamic = "force-dynamic";
+
+const ITEMS_PER_PAGE = 10;
 
 export default function MachinesPage() {
   const { profile } = useAuth();
@@ -25,6 +28,7 @@ export default function MachinesPage() {
 
   const [machines, setMachines] = useState<Machine[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Fetch machines — RLS handles tenant filtering automatically
   const fetchMachines = async () => {
@@ -46,6 +50,18 @@ export default function MachinesPage() {
     if (profile) fetchMachines();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(machines.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedMachines = machines.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Reset to first page if search/filter or data change reduces page count
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [machines.length, totalPages, currentPage]);
 
   // Add a new machine
   const handleAddMachine = async (machineName: string) => {
@@ -112,7 +128,7 @@ export default function MachinesPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Machines</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Machines ({machines.length})</h1>
         </div>
 
         {/* Only client_admin can add machines */}
@@ -122,11 +138,20 @@ export default function MachinesPage() {
       </div>
 
       {/* Machines Table */}
-      <MachinesTable
-        machines={machines}
-        onResetKey={handleResetKey}
-        onStatusChange={handleStatusUpdate}
-      />
+      <div className="space-y-4">
+        <MachinesTable
+          machines={paginatedMachines}
+          onResetKey={handleResetKey}
+          onStatusChange={handleStatusUpdate}
+        />
+        
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          className="mt-6 border-t border-border/20 pt-4"
+        />
+      </div>
     </div>
   );
 }

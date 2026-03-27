@@ -38,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { RefreshCw } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 import { generateClientApiKey } from "@/lib/api-keys";
 
 export default function AdminPage() {
@@ -48,6 +49,8 @@ export default function AdminPage() {
   );
 }
 
+const ITEMS_PER_PAGE = 10;
+
 function AdminContent() {
   const { profile } = useAuth();
   const supabase = createClient();
@@ -56,6 +59,7 @@ function AdminContent() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [clientMachines, setClientMachines] = useState<Machine[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   // Fetch all clients
@@ -78,6 +82,18 @@ function AdminContent() {
     if (profile) fetchClients();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(clients.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedClients = clients.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Reset to first page if search/filter or data change reduces page count
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [clients.length, totalPages, currentPage]);
 
   // Rotate client API key
   const handleRotateApiKey = async (clientId: string) => {
@@ -173,9 +189,9 @@ function AdminContent() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {clients.map((client) => (
+                  {paginatedClients.map((client) => (
                     <TableRow key={client.id} className="border-border/40 hover:bg-muted/30 transition-colors">
-                      <TableCell>
+                      <TableCell className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-xs font-bold text-foreground border border-border/50 shrink-0">
                             {client.name.charAt(0).toUpperCase()}
@@ -183,10 +199,10 @@ function AdminContent() {
                           <span className="font-medium">{client.name}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">
+                      <TableCell className="text-muted-foreground px-6 py-4">
                         {client.email}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="px-6 py-4">
                         {client.client_api_key ? (
                           <code className="text-xs bg-muted px-2 py-1 rounded">
                             {client.client_api_key.slice(0, 12)}...
@@ -197,10 +213,10 @@ function AdminContent() {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="text-muted-foreground">
+                      <TableCell className="text-muted-foreground px-6 py-4">
                         {formatDate(client.created_at)}
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
+                      <TableCell className="text-right space-x-2 px-6 py-4">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -223,6 +239,14 @@ function AdminContent() {
                   ))}
                 </TableBody>
               </Table>
+              
+              <div className="border-t border-border/20 px-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             </div>
           )}
         </CardContent>

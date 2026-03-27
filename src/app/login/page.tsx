@@ -39,8 +39,12 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
-      <Suspense fallback={<div>Loading login...</div>}>
+    <main className="min-h-screen flex items-center justify-center bg-[#0B0F14] px-4 font-inter relative overflow-hidden">
+      {/* Subtle Background Accents */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
+      
+      <Suspense fallback={<div className="text-muted-foreground animate-pulse">Loading login...</div>}>
         <LoginContent />
       </Suspense>
     </main>

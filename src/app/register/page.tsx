@@ -9,7 +9,6 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { AuthForm, type AuthFormData } from "@/components/auth-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -73,34 +72,45 @@ export default function RegisterPage() {
   // Show success state — tell user to verify email
   if (success) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
-        <Card className="w-full max-w-md text-center">
-          <CardHeader>
-            <div className="flex justify-center mb-4">
-              <CheckCircle className="h-12 w-12 text-green-500" />
-            </div>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
-              We&apos;ve sent a verification link to your email address. Please
-              click the link to verify your account.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              After verification, you can{" "}
-              <a href="/login" className="font-medium underline text-foreground">
-                sign in
-              </a>{" "}
-              to your account.
-            </p>
-          </CardContent>
-        </Card>
+      <main className="min-h-screen flex items-center justify-center bg-[#0B0F14] px-4 font-inter">
+        <div className="relative w-full max-w-md">
+          <Card className="relative border-border/40 bg-card/30 backdrop-blur-xl shadow-2xl overflow-hidden text-center">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+            
+            <CardHeader className="space-y-4 pt-10 pb-6">
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <div className="text-[12px] font-bold uppercase tracking-[0.3em] text-emerald-500/80">
+                  Multi Tenant App
+                </div>
+                <CardTitle className="text-3xl font-bold tracking-tight text-foreground">Verify Email</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6 px-8 pb-10">
+              <p className="text-sm text-muted-foreground/80 leading-relaxed">
+                We&apos;ve sent a verification link to your email. Please
+                check your inbox to complete the registration.
+              </p>
+              <div className="pt-6 border-t border-border/20">
+                <p className="text-xs text-muted-foreground/60">
+                  Once verified, you can{" "}
+                  <a href="/login" className="font-bold text-primary hover:text-primary/80 transition-colors">
+                    Login here
+                  </a>.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-[#0B0F14] px-4 font-inter relative overflow-hidden">
+      {/* Subtle Background Accents */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
+      
       <AuthForm mode="register" onSubmit={handleRegister} error={error} />
     </main>
   );
