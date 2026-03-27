@@ -61,7 +61,20 @@ export default function DashboardPage() {
   }, [profile]);
 
   if (loading) {
-    return <p className="text-muted-foreground">Loading dashboard...</p>;
+    return (
+      <div className="space-y-8 animate-pulse">
+        <div className="mb-8">
+          <div className="h-8 w-48 bg-muted rounded"></div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-28 bg-muted/50 rounded-xl border border-border/50"></div>
+          ))}
+        </div>
+        <div className="h-64 bg-muted/30 rounded-xl border border-border/50"></div>
+        <div className="h-64 bg-muted/30 rounded-xl border border-border/50"></div>
+      </div>
+    );
   }
 
   const recentMachines = machines.slice(0, 5);

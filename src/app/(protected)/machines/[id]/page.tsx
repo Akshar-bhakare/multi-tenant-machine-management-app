@@ -130,13 +130,34 @@ export default function MachineDetailPage() {
   };
 
   if (loading) {
-    return <p className="text-muted-foreground">Loading machine details...</p>;
+    return (
+      <div className="space-y-8 animate-pulse">
+        <div>
+          <div className="h-3 w-32 bg-muted rounded mb-4"></div>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="h-8 w-64 bg-muted rounded"></div>
+              <div className="h-3 w-40 bg-muted rounded mt-3"></div>
+            </div>
+            <div className="flex gap-2">
+              <div className="h-8 w-28 bg-muted rounded"></div>
+              <div className="h-8 w-28 bg-muted rounded"></div>
+            </div>
+          </div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="h-56 bg-muted/50 rounded-xl border border-border/50"></div>
+          <div className="h-56 bg-muted/50 rounded-xl border border-border/50"></div>
+        </div>
+      </div>
+    );
   }
+
 
   if (!machine) return null;
 
   return (
-    <div className="space-y-8 max-w-5xl">
+    <div className="space-y-8">
       {/* Breadcrumbs + Header */}
       <div>
         <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-4">
@@ -180,13 +201,13 @@ export default function MachineDetailPage() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* General Info */}
-        <Card className="border-border/50 bg-card/50 shadow-none">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">General Information</CardTitle>
+        <Card className="border-border/60 bg-card rounded-2xl shadow-sm h-full flex flex-col">
+          <CardHeader className="pb-4 pt-6 px-6 shrink-0">
+            <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">General Information</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-between items-center py-2 border-b border-border/30 last:border-0">
-              <span className="text-xs text-muted-foreground">Mode</span>
+          <CardContent className="px-6 pb-6 flex-1">
+            <div className="flex justify-between items-center py-3 border-b border-border/30 last:border-0">
+              <span className="text-[13px] text-muted-foreground font-medium">Mode</span>
               {profile?.role === "super_admin" ? (
                 <Select
                   value={machine.mode}
@@ -194,7 +215,7 @@ export default function MachineDetailPage() {
                     if (val) handleModeChange(val);
                   }}
                 >
-                  <SelectTrigger className="h-8 w-28 text-xs">
+                  <SelectTrigger className="h-8 w-28 text-xs font-medium">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -203,18 +224,21 @@ export default function MachineDetailPage() {
                   </SelectContent>
                 </Select>
               ) : (
-                <Badge variant="outline" className="text-[10px] font-normal tracking-wide">{machine.mode}</Badge>
+                <Badge variant="outline" className={cn(
+                  "text-[11px] font-medium border-transparent",
+                  machine.mode === "Prepaid" ? "bg-blue-500/10 text-blue-500" : "bg-purple-500/10 text-purple-500"
+                )}>{machine.mode}</Badge>
               )}
             </div>
 
-            <div className="flex justify-between items-center py-2 border-b border-border/30 last:border-0">
-              <span className="text-xs text-muted-foreground">Created</span>
-              <span className="text-xs font-mono text-muted-foreground">{formatDate(machine.created_at)}</span>
+            <div className="flex justify-between items-center py-3 border-b border-border/30 last:border-0">
+              <span className="text-[13px] text-muted-foreground font-medium">Created</span>
+              <span className="text-[13px] text-foreground font-medium">{formatDate(machine.created_at)}</span>
             </div>
 
-            <div className="flex justify-between items-center py-2 border-b border-border/30 last:border-0">
-              <span className="text-xs text-muted-foreground">Last Active</span>
-              <span className="text-xs font-mono text-muted-foreground">
+            <div className="flex justify-between items-center py-3 border-b border-border/30 last:border-0">
+              <span className="text-[13px] text-muted-foreground font-medium">Last Active</span>
+              <span className="text-[13px] text-foreground font-medium">
                 {formatDate(machine.last_active)}
               </span>
             </div>
@@ -222,29 +246,30 @@ export default function MachineDetailPage() {
         </Card>
 
         {/* API Keys */}
-        <Card className="border-border/50 bg-card/50 shadow-none">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">API Credentials</CardTitle>
+        <Card className="border-border/60 bg-card rounded-2xl shadow-sm h-full flex flex-col">
+          <CardHeader className="pb-4 pt-6 px-6 shrink-0">
+            <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">API Credentials</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 px-6 pb-6 flex-1">
+
             <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">
+              <p className="text-[11px] font-bold text-foreground mb-2">
                 Machine API Key
               </p>
-              <div className="flex items-center gap-2 p-2 rounded bg-muted/50 border border-border/50">
-                <code className="flex-1 text-[11px] font-mono truncate">
+              <div className="flex items-center gap-3 p-2.5 rounded-lg bg-background border border-border/50">
+                <code className="flex-1 text-[13px] font-mono text-muted-foreground truncate">
                   {machine.machine_api_key || "Not generated"}
                 </code>
                 {machine.machine_api_key && (
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 hover:bg-background"
+                    size="icon"
+                    className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
                     onClick={() =>
                       copyToClipboard(machine.machine_api_key!, "Machine API Key")
                     }
                   >
-                    <Copy className="h-3 w-3" />
+                    <Copy className="h-4 w-4" />
                   </Button>
                 )}
               </div>
@@ -252,23 +277,23 @@ export default function MachineDetailPage() {
 
             {client && (
               <div>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">
+                <p className="text-[11px] font-bold text-foreground mb-2">
                   Organization API Key
                 </p>
-                <div className="flex items-center gap-2 p-2 rounded bg-muted/50 border border-border/50">
-                  <code className="flex-1 text-[11px] font-mono truncate">
+                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-background border border-border/50">
+                  <code className="flex-1 text-[13px] font-mono text-muted-foreground truncate">
                     {client.client_api_key || "Not generated"}
                   </code>
                   {client.client_api_key && (
                     <Button
                       variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0 hover:bg-background"
+                      size="icon"
+                      className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
                       onClick={() =>
                         copyToClipboard(client.client_api_key!, "Organization API Key")
                       }
                     >
-                      <Copy className="h-3 w-3" />
+                      <Copy className="h-4 w-4" />
                     </Button>
                   )}
                 </div>
