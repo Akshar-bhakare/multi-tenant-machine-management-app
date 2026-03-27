@@ -46,7 +46,7 @@ export function AppSidebar() {
     >
       <div className="flex flex-col flex-1 py-4">
         {/* Navigation Links */}
-        <nav className="space-y-2 px-3">
+        <nav className="space-y-2 px-2">
           {filteredNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -54,11 +54,11 @@ export function AppSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-4 rounded-md h-10 transition-all group overflow-hidden whitespace-nowrap",
+                  "flex items-center rounded-md h-10 transition-all group overflow-hidden whitespace-nowrap outline-hidden",
                   isActive
                     ? "bg-secondary text-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                  isHovered ? "px-3" : "px-2.5 justify-center"
+                  isHovered ? "px-3 gap-4" : "justify-center gap-0"
                 )}
               >
                 <item.icon className={cn(
